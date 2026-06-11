@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureChat</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen">
+      <div class="auth-container">
+        <div class="logo">
+          <svg viewBox="0 0 100 100" width="80" height="80">
+            <circle cx="50" cy="50" r="45" fill="#4A90D9"/>
+            <path d="M30 50 L45 65 L70 35" stroke="white" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h1>SecureChat</h1>
+          <p class="subtitle">End-to-End Encrypted Messaging</p>
+        </div>
+        
+        <div class="auth-tabs">
+          <button id="tab-login" class="tab active" data-tab="login">Login</button>
+          <button id="tab-register" class="tab" data-tab="register">Register</button>
+        </div>
+        
+        <form id="login-form" class="auth-form active">
+          <input type="text" id="login-username" placeholder="Username" required>
+          <input type="password" id="login-password" placeholder="Password" required>
+          <button type="submit" class="btn-primary">Login</button>
+          <p class="auth-note">No phone number or personal info required</p>
+        </form>
+        
+        <form id="register-form" class="auth-form">
+          <input type="text" id="register-username" placeholder="Choose a username" required>
+          <input type="password" id="register-password" placeholder="Create a password" required>
+          <button type="submit" class="btn-primary">Create Account</button>
+          <p class="auth-note">Your credentials are anonymous and secure</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main Chat Screen -->
+    <div id="chat-screen" class="screen hidden">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <div class="user-info">
+            <div class="avatar" id="user-avatar"></div>
+            <span id="username-display"></span>
+          </div>
+          <div class="sidebar-actions">
+            <button id="btn-new-group" title="New Group" class="icon-btn">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+              </svg>
+            </button>
+            <button id="btn-logout" title="Logout" class="icon-btn">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search conversations...">
+        </div>
+        
+        <div class="conversations" id="conversations-list">
+          <!-- Conversations will be loaded here -->
+        </div>
+      </div>
+      
+      <!-- Chat Area -->
+      <div class="chat-area" id="chat-area">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+          <svg viewBox="0 0 100 100" width="120" height="120">
+            <circle cx="50" cy="50" r="45" fill="#4A90D9" opacity="0.1"/>
+            <path d="M30 50 L45 65 L70 35" stroke="#4A90D9" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h2>Welcome to SecureChat</h2>
+          <p>Select a conversation to start messaging</p>
+        </div>
+        
+        <!-- Active Chat -->
+        <div id="active-chat" class="active-chat hidden">
+          <div class="chat-header">
+            <button id="btn-back" class="icon-btn mobile-only">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+              </svg>
+            </button>
+            <div class="chat-user-info">
+              <div class="avatar" id="chat-avatar"></div>
+              <div>
+                <div class="chat-name" id="chat-name"></div>
+                <div class="chat-status" id="chat-status"></div>
+              </div>
+            </div>
+            <div class="chat-actions">
+              <button id="btn-file-transfer" title="Send File" class="icon-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6z"/>
+                </svg>
+              </button>
+              <button id="btn-group-info" title="Group Info" class="icon-btn hidden">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="messages-container" id="messages-container">
+            <!-- Messages will be displayed here -->
+          </div>
+          
+          <div class="typing-indicator hidden" id="typing-indicator">
+            <span id="typing-text"></span>
+          </div>
+          
+          <div class="message-input">
+            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+            <button id="btn-send" class="btn-send">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Group Modal -->
+    <div id="group-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Create New Group</h3>
+        <input type="text" id="group-name-input" placeholder="Group name" required>
+        <div class="member-selection">
+          <h4>Select Members</h4>
+          <div id="member-list" class="member-list">
+            <!-- Member checkboxes will be loaded here -->
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-cancel-group" class="btn-secondary">Cancel</button>
+          <button id="btn-create-group" class="btn-primary">Create Group</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Info Modal -->
+    <div id="group-info-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3 id="group-info-title"></h3>
+        <div id="group-members-list" class="member-list"></div>
+        <div class="modal-actions">
+          <button id="btn-close-group-info" class="btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Transfer Modal -->
+    <div id="file-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Send File (P2P Transfer)</h3>
+        <div class="file-drop-area" id="file-drop-area">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="#666">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+          </svg>
+          <p>Drag & drop files here or click to select</p>
+          <input type="file" id="file-input" hidden>
+        </div>
+        <div id="file-preview" class="file-preview hidden"></div>
+        <div id="transfer-progress" class="transfer-progress hidden">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <span id="progress-text">0%</span>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-cancel-file" class="btn-secondary">Cancel</button>
+          <button id="btn-send-file" class="btn-primary">Send File</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
